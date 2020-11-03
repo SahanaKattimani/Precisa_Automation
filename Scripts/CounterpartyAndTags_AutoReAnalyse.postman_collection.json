@@ -1,0 +1,2865 @@
+{
+	"info": {
+		"_postman_id": "e5077c33-105f-4818-8de4-0b6b9e24fe10",
+		"name": "CounterpartyAndTags_AutoReAnalyse",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ce7c1893-20af-4f94-97be-871f83b83b46",
+						"exec": [
+							"",
+							"var response = pm.response.json();",
+							"",
+							"//Set Token as global variable",
+							"pm.globals.set(\"token\", response.token);",
+							"",
+							"",
+							"pm.test(\"Authentication Successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Username : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('username');",
+							"});",
+							"pm.test(\"Username : Has to be string\", function (){",
+							"    pm.expect(response.username).to.not.equal(null);",
+							"    pm.expect(response.username).to.have.string;",
+							"});",
+							"pm.test(\"Token : Property has to be present\", function(){",
+							"    pm.expect(response).to.have.property('token');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"{{username}}\",\n\t\"password\":\"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/auth/signin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Authenticate",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\":\"user@finezza.in\",\n\t\"password\":\"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/auth/signin",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 23 Jun 2020 17:10:14 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"user@finezza.in\",\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGZpbmV6emEuaW4iLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTU5MjkzMjIxNCwiZXhwIjoxNTkyOTM1ODE0fQ.br2QuvgD7R7XNDAFJoPc1s5H4ejn0DGKuxzrUhgMLss\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "75e8d944-5b41-4919-af83-9da08ab092a9",
+						"exec": [
+							"//Function to check if the number is integer",
+							"function isNormalInteger(str) {",
+							"    var n = Math.floor(Number(str));",
+							"    return n !== Infinity && String(n) === str && n >= 0;",
+							"}",
+							"",
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"Created\")",
+							"{",
+							"    pm.test(\"Status code is 201, Successfully Created the Account\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    });",
+							"    pm.globals.set(\"CreatedAccount\", response);",
+							"    pm.globals.set(\"BankAccountId\", response.accountId);",
+							"    pm.globals.set(\"AccountName\", response.accountName);",
+							"    pm.globals.set(\"BankAccountNumber\", response.accountNumber);",
+							"    pm.globals.set(\"AccountType\", response.accountType);",
+							"    pm.globals.set(\"AccountTypeName\", response.accountTypeName);",
+							"    pm.globals.set(\"BankId\", response.bankId);",
+							"    pm.globals.set(\"BankName\", response.bankName);",
+							"    pm.globals.set(\"AccountStatus\", response.status);",
+							"    pm.globals.set(\"CallBackURL\", response.callbackUrl);",
+							"    pm.globals.set(\"AccountReferenceNumber\", response.accountReferenceNumber);",
+							" ",
+							"",
+							"    var schema = pm.globals.get(\"CreatedAccount\");",
+							"",
+							"    pm.test(\"Bank Account Id is \" + schema.accountId);",
+							"    ",
+							"    //Assertions to check if mandatory fields are empty",
+							"    pm.test(\"Bank Account Id has to be string\", function () {",
+							"        pm.expect(isNormalInteger(schema.accountId)).to.be.true;",
+							"        pm.expect(schema.accountId).to.not.equal(null);",
+							"        pm.expect(schema.accountId).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account name has to be string\", function () {",
+							"        pm.expect(schema.accountName).to.have.string;",
+							"        pm.expect(schema.accountName).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Account number has to be a valid\", function () {",
+							"        pm.expect(schema.accountNumber).to.have.string;",
+							"        pm.expect(schema.accountNumber).to.not.equal(null);",
+							"        });",
+							"    ",
+							"    pm.test(\"Account Type has to be a number\", function () {",
+							"        pm.expect(schema.accountType).to.be.oneOf([\"1\", \"2\", \"3\", \"4\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"AccountTypeName has to be a string\", function () {",
+							"        pm.expect(schema.accountTypeName).to.have.string;",
+							"        pm.expect(schema.accountTypeName).to.be.oneOf([\"Savings Account\",\"Current Account\",\"Overdraft Account\", \"Cash Credit Account\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"Bank Id has to be a number\", function () {",
+							"        pm.expect(schema.bankId).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Bank name has to be string\", function () {",
+							"        pm.expect(schema.bankName).to.have.string;",
+							"        pm.expect(schema.bankName).to.not.equal(null);",
+							"        pm.expect(schema.bankName).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Status has to be string\", function () {",
+							"        pm.expect(schema.status).to.have.string;",
+							"        pm.expect(schema.status).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"CallBackURL has to be string\", function () {",
+							"        pm.expect(schema.callbackUrl).to.have.string;",
+							"        pm.expect(schema.callbackUrl).to.not.equal(null);",
+							"        pm.expect(schema.callbackUrl).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Reference Number has to be string\", function () {",
+							"        pm.expect(schema.accountReferenceNumber).to.have.string;",
+							"        pm.expect(schema.accountReferenceNumber).to.not.equal(null);",
+							"        pm.expect(schema.accountReferenceNumber).to.not.be.empty;",
+							"        });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid bank id\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account type\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"JSON parse error....\");",
+							"    });",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"bankId\": \"{{bankId}}\",\n   \"accountType\": \"{{accountType}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account"
+					]
+				},
+				"description": "To create a new account, users will pass mandatory fields highlighted in the request body. It can also send in group Id to map it to a group. If a group Id is passed in an api request but is not present, then it will create a new group and map it to a new account.\nSimilarly accountReferenceNumber can be passed by clients to map the account details. If not passed it will create one and send it back in response.\nIt is synchronized api, on success the response will have a new account object in response."
+			},
+			"response": [
+				{
+					"name": "Create Account",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"accountNumber\": \"34-9221\",\n   \"bankId\": 9,\n   \"accountType\": 1,\n   \"referenceId\": \"N92389129\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/bsa/v2/account",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"bsa",
+								"v2",
+								"account"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 24 Jun 2020 05:16:23 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accountId\": 3,\n    \"accountName\": \"\",\n    \"accountNumber\": \"34-9221\",\n    \"accountType\": 1,\n    \"accountTypeName\": \"Savings Account\",\n    \"bankId\": 9,\n    \"bankName\": \"ICICI Bank\",\n    \"status\": \"New\",\n    \"callbackUrl\": \"\",\n    \"referenceId\": \"N92389129\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Upload Statements",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cec6cf76-18d4-4779-aba5-dbc4d134bffc",
+						"exec": [
+							"//Function to check if the number is integer",
+							"function isNormalInteger(str) {",
+							"    var n = Math.floor(Number(str));",
+							"    return n !== Infinity && String(n) === str && n >= 0;",
+							"}",
+							"",
+							"var response = pm.response.json();",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully Created the Account\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"accountId : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('accountId');",
+							"    });",
+							"",
+							"    pm.test(\"accountReferenceNumber : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('accountReferenceNumber');",
+							"    });",
+							"",
+							"    pm.test(\"success : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('success');",
+							"    });",
+							"",
+							"    pm.test(\"failed : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('failed');",
+							"    });",
+							"",
+							"    if(response.success[0]){",
+							"",
+							"        pm.test(\"originalName : Property has to be present success array of objects\", function (){",
+							"        pm.expect(response.success[0]).to.have.property('originalName');",
+							"        });",
+							"",
+							"        pm.test(\"documentType : Property has to be present success array of objects\", function (){",
+							"        pm.expect(response.success[0]).to.have.property('documentType');",
+							"        });",
+							"",
+							"        pm.test(\"fileId : Property has to be present success array of objects\", function (){",
+							"        pm.expect(response.success[0]).to.have.property('fileId');",
+							"        });",
+							"",
+							"        //Setting file id as global variable",
+							"        pm.globals.set(\"FileId\", response.success[0].fileId);",
+							"",
+							"        pm.test(\"password : Property has to be present for the password protected files\", function (){",
+							"        pm.expect(response.success[0]).to.have.property('password');",
+							"        pm.globals.set(\"FilePassword\", response.success[0].password);",
+							"        });",
+							"    }",
+							"    else if(response.failed[0]){",
+							"    ",
+							"        pm.test(\"originalName : Property has to be present failed array of objects\", function (){",
+							"        pm.expect(response.failed[0]).to.have.property('originalName');",
+							"        });",
+							"",
+							"        pm.test(\"password : Property has to be present failed array of objects\", function (){",
+							"        pm.expect(response.failed[0]).to.have.property('password');",
+							"        });",
+							"",
+							"        pm.test(\"errorMessage : Property has to be present failed array of objects\", function (){",
+							"        pm.expect(response).to.have.property('errorMessage');",
+							"        });",
+							"",
+							"    }",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"errorMessage : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('errorMessage');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Incorrect bank statement\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"No such account id found\");",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "{{file}}"
+						}
+					],
+					"options": {
+						"formdata": {}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/file/upload?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"file",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": "759",
+							"disabled": true
+						},
+						{
+							"key": "accountNumber",
+							"value": "AB83934",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "7000569412",
+							"disabled": true
+						},
+						{
+							"key": "validate",
+							"value": "no",
+							"disabled": true
+						},
+						{
+							"key": "account",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Summary1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "97add289-5ad7-4fc1-aedf-1895ca28fbde",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{ ",
+							"        ",
+							"        pm.test(\"Status code is 200, Successfully fetched summary\", function () {",
+							"        pm.response.to.have.status(200);",
+							"        });",
+							"",
+							"        pm.test(\"summary : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('summary');",
+							"        });",
+							"",
+							"        pm.test(\"date : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('date');",
+							"        });",
+							"",
+							"        pm.test(\"total_inflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_inflow');",
+							"        });",
+							"",
+							"        pm.test(\"inflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('inflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_outflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_outflow');",
+							"        });",
+							"",
+							"        pm.test(\"outflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('outflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_delta : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_delta');",
+							"        });",
+							"",
+							"        pm.test(\"daily_average_balance : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('daily_average_balance');",
+							"        });",
+							"",
+							"        pm.test(\"total_emi : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_emi');",
+							"        });",
+							"",
+							"        pm.test(\"emi_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('emi_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_cash_inflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_cash_inflow');",
+							"        });",
+							"        ",
+							"        pm.test(\"cash_inflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('cash_inflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_cash_outflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_cash_outflow');",
+							"        });",
+							"",
+							"        pm.test(\"cash_outflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('cash_outflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_biz_inflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_biz_inflow');",
+							"        });",
+							"",
+							"        pm.test(\"biz_inflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('biz_inflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_biz_outflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_biz_outflow');",
+							"        });",
+							"",
+							"        pm.test(\"biz_outflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('biz_outflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"central_credit_day : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('central_credit_day');",
+							"        });",
+							"",
+							"        pm.test(\"central_debit_day : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('central_debit_day');",
+							"        });",
+							"",
+							"        pm.test(\"start_date : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('start_date');",
+							"        pm.globals.set(\"start_date\", response.summary[0].start_date);",
+							"        });",
+							"",
+							"        pm.test(\"end_date : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('end_date');",
+							"        pm.globals.set(\"end_date\", response.summary[0].end_date);",
+							"        });",
+							"",
+							"        pm.test(\"account_id : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('account_id');",
+							"        });",
+							"    ",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Fetch Summary1\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"Status code is 400, Failed to fetch summary\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"More than one account id/account reference number found in request parameter\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Anyone is mandatory, Account id or Account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"        ",
+							"    }",
+							"",
+							"}",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"    pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6f984225-b8fe-46df-ba6a-073892da62ee",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\":\"2740\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/summary?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"summary"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "credit",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Transactions1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3399da11-25aa-4c83-af6e-ccdff041e64d",
+						"exec": [
+							"var response = pm.response.json();",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully fetched the transactions in an Account\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"pagination : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('pagination');",
+							"    });",
+							"",
+							"    pm.test(\"pageNumber : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageNumber');",
+							"    });",
+							"",
+							"    pm.test(\"pageSize : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"totalElements : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('totalElements');",
+							"    });",
+							"",
+							"    pm.test(\"totalPages : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('totalPages');",
+							"    });",
+							"",
+							"    pm.test(\"order : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('order');",
+							"    });",
+							"",
+							"    pm.test(\"sortBy : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('sortBy');",
+							"    });",
+							"",
+							"    pm.test(\"transactions : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('transactions');",
+							"    });",
+							"",
+							"    if(response.transactions[0]){",
+							"        pm.test(\"id : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('id');",
+							"        pm.globals.set(\"TransactionId\", response.transactions[0].id);",
+							"        });",
+							"",
+							"        pm.test(\"transaction_date : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('transaction_date');",
+							"        });",
+							"",
+							"        pm.test(\"particular : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('particular');",
+							"        });",
+							"",
+							"        pm.test(\"cheque_Number : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('cheque_Number');",
+							"        });",
+							"",
+							"        pm.test(\"transaction_type : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('transaction_type');",
+							"        });",
+							"",
+							"        pm.test(\"amount : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('amount');",
+							"        });",
+							"",
+							"        pm.test(\"balance : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('balance');",
+							"        });",
+							"",
+							"        pm.test(\"gap : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('gap');",
+							"        });",
+							"",
+							"        pm.test(\"value_date : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('value_date');",
+							"        });",
+							"",
+							"        pm.test(\"account_no : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('account_no');",
+							"        });",
+							"",
+							"        pm.test(\"account_id : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('account_id');",
+							"        });",
+							"",
+							"        pm.test(\"counterparty : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('counterparty');",
+							"        });",
+							"",
+							"        pm.test(\"verified_counterparty : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('verified_counterparty');",
+							"        });",
+							"",
+							"        pm.test(\"tags : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('tags');",
+							"        });",
+							"",
+							"        pm.test(\"modified_tags : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('modified_tags');",
+							"        });",
+							"",
+							"        pm.test(\"fileSeq : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('fileSeq');",
+							"        });",
+							"",
+							"        pm.test(\"fileId : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('fileId');",
+							"        });",
+							"",
+							"        pm.test(\"computed_balance : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('computed_balance');",
+							"        });",
+							"",
+							"        pm.test(\"Transaction Id fetched for updating verified counterparty and updating modified tags is : \" + pm.globals.get(\"TransactionId\"));",
+							"        pm.test(\"Transaction Date is \" + response.transactions[0].transaction_date);",
+							"        pm.test(\"Particular is \" + response.transactions[0].particular);",
+							"        pm.test(\"Cheque Number is \" + response.transactions[0].cheque_Number);",
+							"        pm.test(\"Transaction Type is \" + response.transactions[0].transaction_type);",
+							"        pm.test(\"Amount is \" + response.transactions[0].amount);",
+							"        pm.test(\"Balance \" + response.transactions[0].balance);",
+							"        pm.test(\"Gap is \" + response.transactions[0].gap);",
+							"        pm.test(\"Value Date is \" + response.transactions[0].value_date);",
+							"        pm.test(\"Account Number is \" + response.transactions[0].account_no);",
+							"        pm.test(\"Bank Account Id is \" + response.transactions[0].account_id);",
+							"        pm.test(\"Counterparty is \" + response.transactions[0].counterparty);",
+							"        pm.test(\"Verified Counterparty is \" + response.transactions[0].verified_counterparty);",
+							"        pm.test(\"Tags is \" + response.transactions[0].tags);",
+							"        pm.test(\"Modified Tag is \" + response.transactions[0].modified_tags);",
+							"        pm.test(\"File Sequence is \" + response.transactions[0].fileSeq);",
+							"        pm.test(\"File Id is \" + response.transactions[0].fileId);",
+							"        pm.test(\"Computed Balance is \" + response.transactions[0].computed_balance);",
+							"",
+							"",
+							"    }",
+							"",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Fetch Transactions1\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"Invalid account type\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"JSON parse error....\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2e81db1e-770e-4752-8c1d-1179566ef8f1",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/transactions?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "particulars",
+							"value": "THOUSINGFINANCELTD",
+							"disabled": true
+						},
+						{
+							"key": "transactionType",
+							"value": "Cr",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "PARN2585",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Counterparty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5c15cac1-fcba-4c73-85ea-0f9b44031399",
+						"exec": [
+							"var response = pm.response.json();",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"Message : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('message');",
+							"    });",
+							"",
+							"    pm.test(\"Updated verified counterparties\", function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Updated verified counterparties\");",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Update Counterparty\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"",
+							"        pm.test(\"Status code is 400, Failed to update counterparty\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"timestamp : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('timestamp');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid id(s)\");",
+							"        });",
+							"    ",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "90edc0af-05ed-42a9-be4e-2081e7d979ba",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{TransactionId}}\",\n        \"counterparty\": \"{{Updatecounterparty}}\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/editCounterparties?accountReferenceNumber={{AccountReferenceNumber}}&reAnalyse={{reAnalyse}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"editCounterparties"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						},
+						{
+							"key": "reAnalyse",
+							"value": "{{reAnalyse}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Tags",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "34e18692-e20f-4887-8765-5d20b3bfb633",
+						"exec": [
+							"var response = pm.response.json();",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.test(\"Status code is 200, Successfully Updated the modified tags\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"Message : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('message');",
+							"    });",
+							"",
+							"    pm.test(\"Updated modified tags\", function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Updated modified tags\");",
+							"    });",
+							"}",
+							"",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Update Tags\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"        pm.expect.fail();",
+							"        });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"",
+							"        pm.test(\"Status code is 400, Failed to Update Tags\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"timestamp : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('timestamp');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid id(s)\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"}",
+							"",
+							"else if(pm.response.status ==  \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "59dbb3ef-5301-451a-9809-b3d29d0d2ad6",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{TransactionId}}\",\n        \"modifiedTag\": \"{{UpdateTags}}\"\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/editTags?accountReferenceNumber={{AccountReferenceNumber}}&reAnalyse={{reAnalyse}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"editTags"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						},
+						{
+							"key": "reAnalyse",
+							"value": "{{reAnalyse}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Summary2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adf43484-ed59-479f-846d-750d7b303a01",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{ ",
+							"        ",
+							"        pm.test(\"Status code is 200, Successfully fetched summary\", function () {",
+							"        pm.response.to.have.status(200);",
+							"        });",
+							"",
+							"        pm.test(\"summary : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('summary');",
+							"        });",
+							"",
+							"        pm.test(\"date : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('date');",
+							"        });",
+							"",
+							"        pm.test(\"total_inflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_inflow');",
+							"        });",
+							"",
+							"        pm.test(\"inflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('inflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_outflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_outflow');",
+							"        });",
+							"",
+							"        pm.test(\"outflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('outflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_delta : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_delta');",
+							"        });",
+							"",
+							"        pm.test(\"daily_average_balance : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('daily_average_balance');",
+							"        });",
+							"",
+							"        pm.test(\"total_emi : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_emi');",
+							"        });",
+							"",
+							"        pm.test(\"emi_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('emi_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_cash_inflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_cash_inflow');",
+							"        });",
+							"        ",
+							"        pm.test(\"cash_inflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('cash_inflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_cash_outflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_cash_outflow');",
+							"        });",
+							"",
+							"        pm.test(\"cash_outflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('cash_outflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_biz_inflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_biz_inflow');",
+							"        });",
+							"",
+							"        pm.test(\"biz_inflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('biz_inflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"total_biz_outflow : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('total_biz_outflow');",
+							"        });",
+							"",
+							"        pm.test(\"biz_outflow_count : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('biz_outflow_count');",
+							"        });",
+							"",
+							"        pm.test(\"central_credit_day : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('central_credit_day');",
+							"        });",
+							"",
+							"        pm.test(\"central_debit_day : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('central_debit_day');",
+							"        });",
+							"",
+							"        pm.test(\"start_date : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('start_date');",
+							"        pm.globals.set(\"start_date\", response.summary[0].start_date);",
+							"        });",
+							"",
+							"        pm.test(\"end_date : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('end_date');",
+							"        pm.globals.set(\"end_date\", response.summary[0].end_date);",
+							"        });",
+							"",
+							"        pm.test(\"account_id : Property has to be present in Summary object\", function (){",
+							"        pm.expect(response.summary[0]).to.have.property('account_id');",
+							"        });",
+							"    ",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Fetch Summary2\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"Status code is 400, Failed to fetch summary\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"More than one account id/account reference number found in request parameter\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Anyone is mandatory, Account id or Account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"    pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "71c8d2f6-78cc-4d9a-a1d0-e9a036f24f84",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountId\":\"2740\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/summary?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"summary"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "credit",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download CAM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cac63400-e6f3-480a-a4f7-c01d56bc1c53",
+						"exec": [
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.test(\"Status code is 200, Successfully Downloaded the CAM\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Download CAM\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"Status code is 400, Failed to download the CAM\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(pm.response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"timestamp : Property has to be present\", function (){",
+							"        pm.expect(pm.response).to.have.property('timestamp');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid id(s)\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account is deleted\");",
+							"        });",
+							"    }",
+							"}",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "69e2dc48-7359-4d0d-afeb-db7a46ab424a",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/cam/download?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"cam",
+						"download"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Transactions2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e010c00-d043-44f0-b0c3-c462bfbbdeb0",
+						"exec": [
+							"var response = pm.response.json();",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully fetched the transactions in an Account\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"pagination : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('pagination');",
+							"    });",
+							"",
+							"    pm.test(\"pageNumber : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageNumber');",
+							"    });",
+							"",
+							"    pm.test(\"pageSize : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"totalElements : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('totalElements');",
+							"    });",
+							"",
+							"    pm.test(\"totalPages : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('totalPages');",
+							"    });",
+							"",
+							"    pm.test(\"order : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('order');",
+							"    });",
+							"",
+							"    pm.test(\"sortBy : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('sortBy');",
+							"    });",
+							"",
+							"    pm.test(\"transactions : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('transactions');",
+							"    });",
+							"",
+							"    if(response.transactions[0]){",
+							"        pm.test(\"id : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('id');",
+							"        });",
+							"",
+							"        pm.test(\"transaction_date : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('transaction_date');",
+							"        });",
+							"",
+							"        pm.test(\"particular : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('particular');",
+							"        });",
+							"",
+							"        pm.test(\"cheque_Number : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('cheque_Number');",
+							"        });",
+							"",
+							"        pm.test(\"transaction_type : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('transaction_type');",
+							"        });",
+							"",
+							"        pm.test(\"amount : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('amount');",
+							"        });",
+							"",
+							"        pm.test(\"balance : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('balance');",
+							"        });",
+							"",
+							"        pm.test(\"gap : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('gap');",
+							"        });",
+							"",
+							"        pm.test(\"value_date : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('value_date');",
+							"        });",
+							"",
+							"        pm.test(\"account_no : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('account_no');",
+							"        });",
+							"",
+							"        pm.test(\"account_id : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('account_id');",
+							"        });",
+							"",
+							"        pm.test(\"counterparty : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('counterparty');",
+							"        });",
+							"",
+							"        pm.test(\"verified_counterparty : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('verified_counterparty');",
+							"        });",
+							"",
+							"        pm.test(\"tags : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('tags');",
+							"        });",
+							"",
+							"        pm.test(\"modified_tags : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('modified_tags');",
+							"        });",
+							"",
+							"        pm.test(\"fileSeq : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('fileSeq');",
+							"        });",
+							"",
+							"        pm.test(\"fileId : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('fileId');",
+							"        });",
+							"",
+							"        pm.test(\"computed_balance : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('computed_balance');",
+							"        });",
+							"    ",
+							"",
+							"        for(var i = 0; i < response.transactions.length; i++)",
+							"        {",
+							"            if(response.transactions[i].id == pm.globals.get(\"TransactionId\"))",
+							"            {",
+							"                pm.test(\"Transaction Id found : \" + response.transactions[i].id);         ",
+							"                pm.test(\"Verified Counterparty found \" + response.transactions[i].verified_counterparty);",
+							"                pm.test(\"Modified Tag found \" + response.transactions[i].modified_tags);",
+							"            }",
+							"        }",
+							"    }",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Fetch Transactions2\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"Invalid account type\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"JSON parse error....\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3a0ccc3c-6448-4ec1-a43c-35afc9500e9d",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/transactions?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "particulars",
+							"value": "THOUSINGFINANCELTD",
+							"disabled": true
+						},
+						{
+							"key": "transactionType",
+							"value": "Cr",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "PARN2585",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Revert Counterparty",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0ee5e3d8-6646-4d82-a7bc-9208f86c1819",
+						"exec": [
+							"var response = pm.response.json();",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"Message : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('message');",
+							"    });",
+							"",
+							"    pm.test(\"Reverted changes in verified counterparties\", function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Reverted changes in verified counterparties\");",
+							"    });",
+							"}",
+							"",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Update Counterparty\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"",
+							"        pm.test(\"Status code is 400, Failed to revert counterparties\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"timestamp : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('timestamp');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid id(s)\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "25de58e5-eb76-4a17-8859-8ea23887472a",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ids\":[\"{{TransactionId}}\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/revertCounterparties?accountReferenceNumber={{AccountReferenceNumber}}&reAnalyse={{reAnalyse}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"revertCounterparties"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						},
+						{
+							"key": "reAnalyse",
+							"value": "{{reAnalyse}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Revert Tags",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1c977c89-2a09-4b9d-bc09-31d1f6c22126",
+						"exec": [
+							"var response = pm.response.json();",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.test(\"Status code is 200, Successfully Reverted the Tags\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"Message : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('message');",
+							"    });",
+							"",
+							"    pm.test(\"Reverted changes in modified tags\", function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Reverted changes in modified tags\");",
+							"    });",
+							"}",
+							"",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Revert Tags\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"        pm.expect.fail();",
+							"        });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"Status code is 400, Failed to Revert the Tags\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"timestamp : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('timestamp');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid id(s)\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c5d634f7-8466-4ada-a39e-3d0a546ec3f8",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ids\":[\"{{TransactionId}}\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/revertTags?accountReferenceNumber={{AccountReferenceNumber}}&reAnalyse=true",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"revertTags"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						},
+						{
+							"key": "reAnalyse",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download CAM2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d6ee7a7e-8475-4bf6-9365-d6aac8bddfd4",
+						"exec": [
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(120, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\"){",
+							"    pm.test(\"Status code is 200, Successfully Downloaded the CAM\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Download CAM2\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"Status code is 400, Failed to download the CAM\", function () {",
+							"        pm.response.to.have.status(400);",
+							"        });",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(pm.response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"timestamp : Property has to be present\", function (){",
+							"        pm.expect(pm.response).to.have.property('timestamp');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account reference number\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid id(s)\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account is deleted\");",
+							"        });",
+							"    }",
+							"}",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dd814d3f-cb36-42ee-88e5-9d7793f9266a",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/cam/download?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"cam",
+						"download"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Transactions3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "adf3bb96-f0e9-4d65-b6d4-6e6e75a125c4",
+						"exec": [
+							"var response = pm.response.json();",
+							"var moment = require('moment');",
+							"console.log(\"Displaying : require('moment') : \" + moment);",
+							"",
+							"var timeStamp = pm.globals.get(\"timeStamp\");",
+							"console.log(\"Displaying TimeStamp : \" + timeStamp);",
+							"",
+							"if (!timeStamp) { //create new Timestamp (now + 180 seconds)",
+							"    timeStamp = moment().add(60, 'seconds');",
+							"    pm.globals.set(\"timeStamp\", timeStamp);",
+							"    console.log(\"New TimeStamp : \" + timeStamp);",
+							"}",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully fetched the transactions in an Account\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"pagination : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('pagination');",
+							"    });",
+							"",
+							"    pm.test(\"pageNumber : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageNumber');",
+							"    });",
+							"",
+							"    pm.test(\"pageSize : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"totalElements : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('totalElements');",
+							"    });",
+							"",
+							"    pm.test(\"totalPages : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('totalPages');",
+							"    });",
+							"",
+							"    pm.test(\"order : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('order');",
+							"    });",
+							"",
+							"    pm.test(\"sortBy : Property has to be present\", function (){",
+							"    pm.expect(response.pagination).to.have.property('sortBy');",
+							"    });",
+							"",
+							"    pm.test(\"transactions : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('transactions');",
+							"    });",
+							"",
+							"    if(response.transactions[0]){",
+							"        pm.test(\"id : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('id');",
+							"        });",
+							"",
+							"        pm.test(\"transaction_date : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('transaction_date');",
+							"        });",
+							"",
+							"        pm.test(\"particular : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('particular');",
+							"        });",
+							"",
+							"        pm.test(\"cheque_Number : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('cheque_Number');",
+							"        });",
+							"",
+							"        pm.test(\"transaction_type : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('transaction_type');",
+							"        });",
+							"",
+							"        pm.test(\"amount : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('amount');",
+							"        });",
+							"",
+							"        pm.test(\"balance : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('balance');",
+							"        });",
+							"",
+							"        pm.test(\"gap : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('gap');",
+							"        });",
+							"",
+							"        pm.test(\"value_date : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('value_date');",
+							"        });",
+							"",
+							"        pm.test(\"account_no : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('account_no');",
+							"        });",
+							"",
+							"        pm.test(\"account_id : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('account_id');",
+							"        });",
+							"",
+							"        pm.test(\"counterparty : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('counterparty');",
+							"        });",
+							"",
+							"        pm.test(\"verified_counterparty : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('verified_counterparty');",
+							"        });",
+							"",
+							"        pm.test(\"tags : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('tags');",
+							"        });",
+							"",
+							"        pm.test(\"modified_tags : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('modified_tags');",
+							"        });",
+							"",
+							"        pm.test(\"fileSeq : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('fileSeq');",
+							"        });",
+							"",
+							"        pm.test(\"fileId : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('fileId');",
+							"        });",
+							"",
+							"        pm.test(\"computed_balance : Property has to be present in transactions object\", function (){",
+							"        pm.expect(response.transactions[0]).to.have.property('computed_balance');",
+							"        });",
+							"",
+							"        for(var i = 0; i < response.transactions.length; i++)",
+							"        {",
+							"            if(response.transactions[i].id == pm.globals.get(\"TransactionId\"))",
+							"            {",
+							"                pm.test(\"Transaction Id found : \" + response.transactions[i].id);         ",
+							"                pm.test(\"Verified Counterparty found : \" + response.transactions[i].verified_counterparty);",
+							"                pm.test(\"Modified Tag found : \" + response.transactions[i].modified_tags);",
+							"            }",
+							"        }",
+							"    }    ",
+							"}",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    if (moment() < moment(pm.globals.get(\"timeStamp\")))",
+							"    {   ",
+							"        postman.setNextRequest(\"Fetch Transactions3\");",
+							"    }",
+							"    else",
+							"    {",
+							"        pm.test(\"Set time limit is exceeded\", function() {",
+							"            pm.expect.fail();",
+							"         });",
+							"        console.log(\"Stopping tests...\");",
+							"        pm.globals.unset(\"timeStamp\");",
+							"",
+							"        pm.test(\"error : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('error');",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid bank id\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"Invalid account type\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"JSON parse error....\");",
+							"        });",
+							"",
+							"        pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"            pm.expect(pm.response.text()).to.include(\"Account not processed\");",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3c41f7af-0a53-4a79-aaff-d3790da8c143",
+						"exec": [
+							"setTimeout(function(){}, 1000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/analysis/transactions?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"analysis",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "size",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "particulars",
+							"value": "THOUSINGFINANCELTD",
+							"disabled": true
+						},
+						{
+							"key": "transactionType",
+							"value": "Cr",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "PARN2585",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

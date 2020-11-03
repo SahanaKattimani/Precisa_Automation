@@ -1,0 +1,14 @@
+[
+	{
+
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 8,
+   		"accountType": 4,
+   		"Updatecounterparty": "Custom updated verified counterparty",
+   		"UpdateTags": "Custom added modified tags",
+   		"file": "/Users/gatim/Postman/files/HDFC/2a626f4f-fb27-4915-9e2b-9f4ecae959a0_08.pdf",
+   		"reAnalyse": true
+   	}
+]
