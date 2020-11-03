@@ -1,0 +1,46 @@
+[
+	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 8,
+   		"accountType": 1,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14",
+    	"file": "/Users/gatim/Postman/files/HDFC/2a626f4f-fb27-4915-9e2b-9f4ecae959a0_08.pdf"
+   	},
+   	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 8,
+   		"accountType": 2,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14",
+    	"file": "/Users/gatim/Postman/files/HDFC/2a626f4f-fb27-4915-9e2b-9f4ecae959a0_08.pdf"
+   	},
+   	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 3,
+   		"accountType": 4,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14",
+    	"file": "/Users/gatim/Postman/files/HDFC/2a626f4f-fb27-4915-9e2b-9f4ecae959a0_08.pdf"
+   	},
+   	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 8,
+   		"accountType": 4,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14",
+    	"file": "/Users/gatim/Postman/files/HDFC/2a626f4f-fb27-4915-9e2b-9f4ecae959a0_08.pdf"
+   	}
+]

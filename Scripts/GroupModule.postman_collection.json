@@ -1,0 +1,1676 @@
+{
+	"info": {
+		"_postman_id": "33dddc51-64bf-4da4-bcf5-62515e133fd2",
+		"name": "GroupModule",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "88d3e599-64d6-44e2-aacd-7a96bb99bce8",
+						"exec": [
+							"",
+							"var response = pm.response.json();",
+							"",
+							"//Set Token as global variable",
+							"pm.globals.set(\"token\", response.token);",
+							"",
+							"",
+							"pm.test(\"Authentication Successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Username : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('username');",
+							"});",
+							"pm.test(\"Username : Has to be string\", function (){",
+							"    pm.expect(response.username).to.not.equal(null);",
+							"    pm.expect(response.username).to.have.string;",
+							"});",
+							"pm.test(\"Token : Property has to be present\", function(){",
+							"    pm.expect(response).to.have.property('token');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"{{username}}\",\n\t\"password\":\"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/auth/signin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Authenticate",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\":\"user@finezza.in\",\n\t\"password\":\"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/auth/signin",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 23 Jun 2020 17:10:14 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"user@finezza.in\",\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGZpbmV6emEuaW4iLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTU5MjkzMjIxNCwiZXhwIjoxNTkyOTM1ODE0fQ.br2QuvgD7R7XNDAFJoPc1s5H4ejn0DGKuxzrUhgMLss\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fefe3b21-6ddb-4f5a-994b-286b30ba1408",
+						"exec": [
+							"//Function to check if the number is integer",
+							"function isNormalInteger(str) {",
+							"    var n = Math.floor(Number(str));",
+							"    return n !== Infinity && String(n) === str && n >= 0;",
+							"}",
+							"",
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"Created\")",
+							"{",
+							"    pm.test(\"Status code is 201, Successfully Created the Account\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    });",
+							"    pm.globals.set(\"CreatedAccount\", response);",
+							"    pm.globals.set(\"BankAccountId\", response.accountId);",
+							"    pm.globals.set(\"AccountName\", response.accountName);",
+							"    pm.globals.set(\"BankAccountNumber\", response.accountNumber);",
+							"    pm.globals.set(\"AccountType\", response.accountType);",
+							"    pm.globals.set(\"AccountTypeName\", response.accountTypeName);",
+							"    pm.globals.set(\"BankId\", response.bankId);",
+							"    pm.globals.set(\"BankName\", response.bankName);",
+							"    pm.globals.set(\"AccountStatus\", response.status);",
+							"    pm.globals.set(\"CallBackURL\", response.callbackUrl);",
+							"    pm.globals.set(\"AccountReferenceNumber\", response.accountReferenceNumber);",
+							" ",
+							"",
+							"    var schema = pm.globals.get(\"CreatedAccount\");",
+							"",
+							"    pm.test(\"Bank Account Id is \" + schema.accountId);",
+							"    ",
+							"    //Assertions to check if mandatory fields are empty",
+							"    pm.test(\"Bank Account Id has to be string\", function () {",
+							"        pm.expect(isNormalInteger(schema.accountId)).to.be.true;",
+							"        pm.expect(schema.accountId).to.not.equal(null);",
+							"        pm.expect(schema.accountId).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account name has to be string\", function () {",
+							"        pm.expect(schema.accountName).to.have.string;",
+							"        pm.expect(schema.accountName).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Account number has to be a valid\", function () {",
+							"        pm.expect(schema.accountNumber).to.have.string;",
+							"        pm.expect(schema.accountNumber).to.not.equal(null);",
+							"        });",
+							"    ",
+							"    pm.test(\"Account Type has to be a number\", function () {",
+							"        pm.expect(schema.accountType).to.be.oneOf([\"1\", \"2\", \"3\", \"4\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"AccountTypeName has to be a string\", function () {",
+							"        pm.expect(schema.accountTypeName).to.have.string;",
+							"        pm.expect(schema.accountTypeName).to.be.oneOf([\"Savings Account\",\"Current Account\",\"Overdraft Account\", \"Cash Credit Account\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"Bank Id has to be a number\", function () {",
+							"        pm.expect(schema.bankId).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Bank name has to be string\", function () {",
+							"        pm.expect(schema.bankName).to.have.string;",
+							"        pm.expect(schema.bankName).to.not.equal(null);",
+							"        pm.expect(schema.bankName).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Status has to be string\", function () {",
+							"        pm.expect(schema.status).to.have.string;",
+							"        pm.expect(schema.status).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"CallBackURL has to be string\", function () {",
+							"        pm.expect(schema.callbackUrl).to.have.string;",
+							"        pm.expect(schema.callbackUrl).to.not.equal(null);",
+							"        pm.expect(schema.callbackUrl).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Reference Number has to be string\", function () {",
+							"        pm.expect(schema.accountReferenceNumber).to.have.string;",
+							"        pm.expect(schema.accountReferenceNumber).to.not.equal(null);",
+							"        pm.expect(schema.accountReferenceNumber).to.not.be.empty;",
+							"        });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid bank id\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account type\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"JSON parse error....\");",
+							"    });",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"bankId\": \"{{bankId}}\",\n   \"accountType\": \"{{accountType}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account"
+					]
+				},
+				"description": "To create a new account, users will pass mandatory fields highlighted in the request body. It can also send in group Id to map it to a group. If a group Id is passed in an api request but is not present, then it will create a new group and map it to a new account.\nSimilarly accountReferenceNumber can be passed by clients to map the account details. If not passed it will create one and send it back in response.\nIt is synchronized api, on success the response will have a new account object in response."
+			},
+			"response": [
+				{
+					"name": "Create Account",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"accountNumber\": \"34-9221\",\n   \"bankId\": 9,\n   \"accountType\": 1,\n   \"referenceId\": \"N92389129\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/bsa/v2/account",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"bsa",
+								"v2",
+								"account"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 24 Jun 2020 05:16:23 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accountId\": 3,\n    \"accountName\": \"\",\n    \"accountNumber\": \"34-9221\",\n    \"accountType\": 1,\n    \"accountTypeName\": \"Savings Account\",\n    \"bankId\": 9,\n    \"bankName\": \"ICICI Bank\",\n    \"status\": \"New\",\n    \"callbackUrl\": \"\",\n    \"referenceId\": \"N92389129\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Group Reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2b5d55a9-dd53-45de-8e2e-9cfb7751d70a",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully Created the Group\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"  ",
+							"    pm.globals.set(\"GroupId\", response.groupId);",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"",
+							"    pm.test(\"Status code is 400, Failed to Group the accounts\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid group id\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account(s)\");",
+							"    });",
+							"",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"New group id already exists\");",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Internal Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"accountReferenceNumbers\":[\"{{AccountReferenceNumber}}\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account/group",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account",
+						"group"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Group Reference without Reference Id",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accounts\":[37,38]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/bsa/v2/account/group",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"bsa",
+								"v2",
+								"account",
+								"group"
+							]
+						}
+					},
+					"status": "Accepted",
+					"code": 202,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 23 Jun 2020 14:52:32 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accounts\": [\n        {\n            \"accountId\": 37,\n            \"accountNumber\": \"AC123\",\n            \"accountType\": 1,\n            \"accountTypeName\": \"Saving Account\",\n            \"bankId\": 1,\n            \"bankName\": \"Axis\",\n            \"status\": \"\",\n            \"referenceId\": \"\"\n        },\n        {\n            \"accountId\": 38,\n            \"accountNumber\": \"AC123\",\n            \"accountType\": 1,\n            \"accountTypeName\": \"Saving Account\",\n            \"bankId\": 1,\n            \"bankName\": \"Axis\",\n            \"status\": \"\",\n            \"referenceId\": \"\"\n        }\n    ],\n    \"referenceId\": \"PR117553750101896\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Fetch Group Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3226c7e0-8f03-452a-b7c0-6de80435539a",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully Created the Group\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"groupId : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('groupId');",
+							"    });",
+							"",
+							"    pm.test(\"accounts : object has to be present\", function (){",
+							"    pm.expect(response).to.have.property('accounts');",
+							"    });",
+							"",
+							"    if(response.accounts[0]){",
+							"        pm.test(\"accountId : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountId');",
+							"        });",
+							"",
+							"        pm.test(\"accountName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountName');",
+							"        });",
+							"",
+							"        pm.test(\"accountNumber : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountNumber');",
+							"        });",
+							"",
+							"        pm.test(\"accountType : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountType');",
+							"        });",
+							"",
+							"        pm.test(\"accountTypeName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountTypeName');",
+							"        });",
+							"",
+							"",
+							"        pm.test(\"bankId : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('bankId');",
+							"        });",
+							"",
+							"        pm.test(\"bankName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('bankName');",
+							"        });",
+							"",
+							"        pm.test(\"status : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('status');",
+							"        });",
+							"",
+							"        pm.test(\"callbackUrl : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('callbackUrl');",
+							"        });",
+							"",
+							"        pm.test(\"accountReferenceNumber : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountReferenceNumber');",
+							"        });",
+							"    }",
+							"    else{",
+							"        pm.test(\"There are no linked account for the given Account Reference Id\", function(){",
+							"            pm.expect.fail();",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"",
+							"    pm.test(\"Status code is 400, Failed to Group the accounts\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"timestamp : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('timestamp');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"No Data Found\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid group id\");",
+							"    });",
+							"",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/group/accounts?groupId={{GroupId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"group",
+						"accounts"
+					],
+					"query": [
+						{
+							"key": "groupId",
+							"value": "{{GroupId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch All Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9533159e-6c2a-4cea-b30d-3ab123eab075",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully fetched all the Groups\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"pagination : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('pagination');",
+							"    });",
+							"",
+							"    pm.test(\"pageNumber : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageNumber');",
+							"    });",
+							"",
+							"    pm.test(\"pageSize : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"totalElements : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"totalPages : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"references : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('references');",
+							"    });",
+							"",
+							"    if(response.references[0]){",
+							"        pm.test(\"groupId : Property has to be present in the references object\", function (){",
+							"        pm.expect(response.references[0]).to.have.property('groupId');",
+							"        });",
+							"",
+							"        pm.test(\"Group ID fetched is \" + response.references[0].groupId);",
+							"        ",
+							"    }",
+							"",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"",
+							"    pm.test(\"Status code is 400, Failed to Group the accounts\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"No Data Found\");",
+							"    });",
+							"",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/group/all?groupId={{GroupId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"group",
+						"all"
+					],
+					"query": [
+						{
+							"key": "groupId",
+							"value": "{{GroupId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "76511389-ee4a-478b-8cd1-de0b30757f63",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully Created the Group\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"Status code is 400, Failed to update the Group\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"timestamp : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('timestamp');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid group id\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid current group id\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"New group id is blank\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid current group id. Group id only accepts alphabets, numbers and underscore\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid new group id. Group id only accepts alphabets, numbers and underscore\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Current and new group id are same\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"New group id already exists\");",
+							"    });",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Internal Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"currentGroupId\":\"{{GroupId}}\",\n    \"newGroupId\":\"{{NewGroupId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/group/update",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"group",
+						"update"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update Reference",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentReferenceId\":\"PR117553750101896\",\n    \"newReferenceId\":\"PR1170101896\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/bsa/v2/reference/update",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"bsa",
+								"v2",
+								"reference",
+								"update"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 23 Jun 2020 16:49:03 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 11,\n    \"referenceId\": \"PR1170101896\",\n    \"bankAccountDto\": [\n        {\n            \"accountId\": 37,\n            \"accountNumber\": \"AC123\",\n            \"accountType\": 1,\n            \"accountTypeName\": \"Saving Account\",\n            \"bankId\": 1,\n            \"bankName\": \"Axis\",\n            \"status\": \"\",\n            \"referenceId\": \"\"\n        },\n        {\n            \"accountId\": 38,\n            \"accountNumber\": \"AC123\",\n            \"accountType\": 1,\n            \"accountTypeName\": \"Saving Account\",\n            \"bankId\": 1,\n            \"bankName\": \"Axis\",\n            \"status\": \"\",\n            \"referenceId\": \"\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Fetch Group Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b8db4a88-3604-4079-8007-2df6ded601d5",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully Created the Group\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"groupId : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('groupId');",
+							"    });",
+							"",
+							"    pm.test(\"accounts : object has to be present\", function (){",
+							"    pm.expect(response).to.have.property('accounts');",
+							"    });",
+							"",
+							"    if(response.accounts[0]){",
+							"",
+							"        pm.test(\"accountId : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountId');",
+							"        });",
+							"",
+							"        pm.test(\"accountName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountName');",
+							"        });",
+							"",
+							"        pm.test(\"accountNumber : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountNumber');",
+							"        });",
+							"",
+							"        pm.test(\"accountType : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountType');",
+							"        });",
+							"",
+							"        pm.test(\"accountTypeName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountTypeName');",
+							"        });",
+							"",
+							"",
+							"        pm.test(\"bankId : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('bankId');",
+							"        });",
+							"",
+							"        pm.test(\"bankName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('bankName');",
+							"        });",
+							"",
+							"        pm.test(\"status : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('status');",
+							"        });",
+							"",
+							"        pm.test(\"callbackUrl : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('callbackUrl');",
+							"        });",
+							"",
+							"        pm.test(\"accountReferenceNumber : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountReferenceNumber');",
+							"        });",
+							"    }",
+							"    else{",
+							"        pm.test(\"There are no linked account for the given Account Reference Id\", function(){",
+							"            pm.expect.fail();",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"",
+							"    pm.test(\"Status code is 400, Failed to Group the accounts\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"timestamp : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('timestamp');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"No Data Found\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid group id\");",
+							"    });",
+							"",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/group/accounts?groupId={{NewGroupId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"group",
+						"accounts"
+					],
+					"query": [
+						{
+							"key": "groupId",
+							"value": "{{NewGroupId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ungroup Reference",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "40eda802-5b6c-4147-bdfd-ae1dbbe9c3cf",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully Ungrouped the Accounts\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"",
+							"    pm.test(\"Status code is 400, Failed to ungroup the accounts\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"timestamp : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('timestamp');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid reference id\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account(s)\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Reference id is blank\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Account list is blank\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Reference has no such account to ungroup\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Group has no account to ungroup\");",
+							"    });",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"groupId\":\"{{NewGroupId}}\",\n    \"accountReferenceNumbers\":[\"{{AccountReferenceNumber}}\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account/removeFromGroup",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account",
+						"removeFromGroup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Group Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d39aed6b-7095-4708-ac58-2d8b9f86f376",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully Created the Group\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"groupId : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('groupId');",
+							"    });",
+							"",
+							"    pm.test(\"accounts : object has to be present\", function (){",
+							"    pm.expect(response).to.have.property('accounts');",
+							"    });",
+							"",
+							"    if(response.accounts[0]){",
+							"",
+							"        pm.test(\"accountId : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountId');",
+							"        });",
+							"",
+							"        pm.test(\"accountName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountName');",
+							"        });",
+							"",
+							"        pm.test(\"accountNumber : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountNumber');",
+							"        });",
+							"",
+							"        pm.test(\"accountType : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountType');",
+							"        });",
+							"",
+							"        pm.test(\"accountTypeName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountTypeName');",
+							"        });",
+							"",
+							"",
+							"        pm.test(\"bankId : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('bankId');",
+							"        });",
+							"",
+							"        pm.test(\"bankName : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('bankName');",
+							"        });",
+							"",
+							"        pm.test(\"status : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('status');",
+							"        });",
+							"",
+							"        pm.test(\"callbackUrl : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('callbackUrl');",
+							"        });",
+							"",
+							"        pm.test(\"accountReferenceNumber : Property has to be present in the accounts object\", function (){",
+							"        pm.expect(response.accounts[0]).to.have.property('accountReferenceNumber');",
+							"        });",
+							"    }",
+							"    else{",
+							"        pm.test(\"There are no linked account for the given Account Reference Id\", function(){",
+							"            pm.expect.fail();",
+							"        });",
+							"    }",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"",
+							"    pm.test(\"Status code is 400, Failed to Group the accounts\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"timestamp : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('timestamp');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"No Data Found\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid group id\");",
+							"    });",
+							"",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/group/accounts?groupId={{NewGroupId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"group",
+						"accounts"
+					],
+					"query": [
+						{
+							"key": "groupId",
+							"value": "{{NewGroupId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch All Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "073e89f1-9bf3-4c71-ab18-08a28fea21da",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Status code is 200, Successfully fetched all the Groups\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"pagination : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('pagination');",
+							"    });",
+							"",
+							"    pm.test(\"pageNumber : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageNumber');",
+							"    });",
+							"",
+							"    pm.test(\"pageSize : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"totalElements : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"totalPages : Property has to be present in the pagination object\", function (){",
+							"    pm.expect(response.pagination).to.have.property('pageSize');",
+							"    });",
+							"",
+							"    pm.test(\"references : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('references');",
+							"    });",
+							"",
+							"    if(response.references[0]){",
+							"        pm.test(\"groupId : Property has to be present in the references object\", function (){",
+							"        pm.expect(response.references[0]).to.have.property('groupId');",
+							"        });",
+							"",
+							"        pm.test(\"Group ID fetched is \" + response.references[0].groupId);",
+							"    }",
+							"    else{",
+							"        pm.test(\"There are no references present\", function(){",
+							"            pm.expect.fail();",
+							"        })",
+							"    }",
+							"    ",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"",
+							"    pm.test(\"Status code is 400, Failed to Group the accounts\", function () {",
+							"    pm.response.to.have.status(400);",
+							"    });",
+							"",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"No Data Found\");",
+							"    });",
+							"",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Not Found\")",
+							"{",
+							"    pm.test(\"Status Code is 404: Group Id, Not Found\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/group/allgroupId={{NewGroupId}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"group",
+						"allgroupId={{NewGroupId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

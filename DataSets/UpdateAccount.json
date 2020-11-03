@@ -1,0 +1,16 @@
+[
+	{
+
+      "URL": "http://precisa.dev.finezza.in:8091",
+      "username": "user@finezza.in",
+      "password": "password",
+		  "bankId": 8,
+   		"accountType": 4,
+   		"updateAccountName": "TestAccount",
+  		"updateAccountNumber": "123456",
+      "updateAccountType": 2,
+      "updateBankId": 14,
+   		"updateCallbackUrl": "http://47ea250bc658.ngrok.io/api/finalJson",
+      "file": "/Users/gatim/Postman/files/HDFC/2a626f4f-fb27-4915-9e2b-9f4ecae959a0_08.pdf"
+   	}
+]

@@ -1,0 +1,42 @@
+[
+	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 8,
+   		"accountType": 1,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14"
+   	},
+   	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 8,
+   		"accountType": 2,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14"
+   	},
+   	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 8,
+   		"accountType": 3,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14"
+   	},
+   	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+		"bankId": 4,
+   		"accountType": 4,
+   		"sanctionAmount":"50000",
+    	"startDate": "2020-06-30",
+    	"endDate": "2020-09-14"
+   	}
+]

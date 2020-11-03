@@ -1,0 +1,1211 @@
+{
+	"info": {
+		"_postman_id": "bc10834f-6b31-43ad-acc5-7811017e253e",
+		"name": "UpdateAccount_NoFiles",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authenticate",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "40c86539-0ad6-4e5b-889b-ae54fd784833",
+						"exec": [
+							"",
+							"var response = pm.response.json();",
+							"",
+							"//Set Token as global variable",
+							"pm.globals.set(\"token\", response.token);",
+							"",
+							"",
+							"pm.test(\"Authentication Successful\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Username : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('username');",
+							"});",
+							"pm.test(\"Username : Has to be string\", function (){",
+							"    pm.expect(response.username).to.not.equal(null);",
+							"    pm.expect(response.username).to.have.string;",
+							"});",
+							"pm.test(\"Token : Property has to be present\", function(){",
+							"    pm.expect(response).to.have.property('token');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\":\"{{username}}\",\n\t\"password\":\"{{password}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/auth/signin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Authenticate",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\":\"user@finezza.in\",\n\t\"password\":\"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/auth/signin",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 23 Jun 2020 17:10:14 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"username\": \"user@finezza.in\",\n    \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyQGZpbmV6emEuaW4iLCJyb2xlcyI6WyJVU0VSIl0sImlhdCI6MTU5MjkzMjIxNCwiZXhwIjoxNTkyOTM1ODE0fQ.br2QuvgD7R7XNDAFJoPc1s5H4ejn0DGKuxzrUhgMLss\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Create Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1fedf00b-5b11-49ce-aaf3-fc06a735c3b9",
+						"exec": [
+							"//Function to check if the number is integer",
+							"function isNormalInteger(str) {",
+							"    var n = Math.floor(Number(str));",
+							"    return n !== Infinity && String(n) === str && n >= 0;",
+							"}",
+							"",
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"Created\")",
+							"{",
+							"    pm.test(\"Status code is 201, Successfully Created the Account\", function () {",
+							"    pm.response.to.have.status(201);",
+							"    });",
+							"    pm.globals.set(\"CreatedAccount\", response);",
+							"    pm.globals.set(\"BankAccountId\", response.accountId);",
+							"    pm.globals.set(\"AccountName\", response.accountName);",
+							"    pm.globals.set(\"BankAccountNumber\", response.accountNumber);",
+							"    pm.globals.set(\"AccountType\", response.accountType);",
+							"    pm.globals.set(\"AccountTypeName\", response.accountTypeName);",
+							"    pm.globals.set(\"BankId\", response.bankId);",
+							"    pm.globals.set(\"BankName\", response.bankName);",
+							"    pm.globals.set(\"AccountStatus\", response.status);",
+							"    pm.globals.set(\"CallBackURL\", response.callbackUrl);",
+							"    pm.globals.set(\"AccountReferenceNumber\", response.accountReferenceNumber);",
+							" ",
+							"",
+							"    var schema = pm.globals.get(\"CreatedAccount\");",
+							"",
+							"    pm.test(\"Bank Account Id is \" + schema.accountId);",
+							"    ",
+							"    //Assertions to check if mandatory fields are empty",
+							"    pm.test(\"Bank Account Id has to be string\", function () {",
+							"        pm.expect(isNormalInteger(schema.accountId)).to.be.true;",
+							"        pm.expect(schema.accountId).to.not.equal(null);",
+							"        pm.expect(schema.accountId).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account name has to be string\", function () {",
+							"        pm.expect(schema.accountName).to.have.string;",
+							"        pm.expect(schema.accountName).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Account number has to be a valid\", function () {",
+							"        pm.expect(schema.accountNumber).to.have.string;",
+							"        pm.expect(schema.accountNumber).to.not.equal(null);",
+							"        });",
+							"    ",
+							"    pm.test(\"Account Type has to be a number\", function () {",
+							"        pm.expect(schema.accountType).to.be.oneOf([\"1\", \"2\", \"3\", \"4\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"AccountTypeName has to be a string\", function () {",
+							"        pm.expect(schema.accountTypeName).to.have.string;",
+							"        pm.expect(schema.accountTypeName).to.be.oneOf([\"Savings Account\",\"Current Account\",\"Overdraft Account\", \"Cash Credit Account\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"Bank Id has to be a number\", function () {",
+							"        pm.expect(schema.bankId).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Bank name has to be string\", function () {",
+							"        pm.expect(schema.bankName).to.have.string;",
+							"        pm.expect(schema.bankName).to.not.equal(null);",
+							"        pm.expect(schema.bankName).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Status has to be string\", function () {",
+							"        pm.expect(schema.status).to.have.string;",
+							"        pm.expect(schema.status).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"CallBackURL has to be string\", function () {",
+							"        pm.expect(schema.callbackUrl).to.have.string;",
+							"        pm.expect(schema.callbackUrl).to.not.equal(null);",
+							"        pm.expect(schema.callbackUrl).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Reference Number has to be string\", function () {",
+							"        pm.expect(schema.accountReferenceNumber).to.have.string;",
+							"        pm.expect(schema.accountReferenceNumber).to.not.equal(null);",
+							"        pm.expect(schema.accountReferenceNumber).to.not.be.empty;",
+							"        });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid bank id\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account type\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"JSON parse error....\");",
+							"    });",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"bankId\": \"{{bankId}}\",\n   \"accountType\": \"{{accountType}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account"
+					]
+				},
+				"description": "To create a new account, users will pass mandatory fields highlighted in the request body. It can also send in group Id to map it to a group. If a group Id is passed in an api request but is not present, then it will create a new group and map it to a new account.\nSimilarly accountReferenceNumber can be passed by clients to map the account details. If not passed it will create one and send it back in response.\nIt is synchronized api, on success the response will have a new account object in response."
+			},
+			"response": [
+				{
+					"name": "Create Account",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"accountNumber\": \"34-9221\",\n   \"bankId\": 9,\n   \"accountType\": 1,\n   \"referenceId\": \"N92389129\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base-url}}:8091/api/bsa/v2/account",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"bsa",
+								"v2",
+								"account"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 24 Jun 2020 05:16:23 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accountId\": 3,\n    \"accountName\": \"\",\n    \"accountNumber\": \"34-9221\",\n    \"accountType\": 1,\n    \"accountTypeName\": \"Savings Account\",\n    \"bankId\": 9,\n    \"bankName\": \"ICICI Bank\",\n    \"status\": \"New\",\n    \"callbackUrl\": \"\",\n    \"referenceId\": \"N92389129\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Fetch Account Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2159d24d-4adf-489f-9bd5-b94f9c1a91da",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Fetch Account Details is Successful, Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    var schema = {",
+							"        \"accountId\": pm.globals.get(\"BankAccountId\"),",
+							"        \"accountName\": pm.globals.get(\"AccountName\"),",
+							"        \"accountNumber\": pm.globals.get(\"BankAccountNumber\"),",
+							"        \"accountType\": pm.globals.get(\"AccountType\"),",
+							"        \"accountTypeName\": pm.globals.get(\"AccountTypeName\"),",
+							"        \"bankId\": pm.globals.get(\"BankId\"),",
+							"        \"bankName\": pm.globals.get(\"BankName\"),",
+							"        \"status\": pm.globals.get(\"AccountStatus\"),",
+							"        \"callbackUrl\": pm.globals.get(\"CallBackURL\"),",
+							"        \"accountReferenceNumber\": pm.globals.get(\"AccountReferenceNumber\"),",
+							"        };",
+							"",
+							"",
+							"        pm.test(\"Fetched Account Name is same as the Created Account\", function () {",
+							"        pm.expect(schema.accountName).to.equal(response.accountName);",
+							"        });",
+							"",
+							"",
+							"        pm.test(\"Fetched Account Type is same as the Created Account\", function () {",
+							"        pm.expect(schema.accountType).to.equal(response.accountType);",
+							"        });",
+							"",
+							"        pm.test(\"Fetched Account TypeName is same as the created account\", function () {",
+							"        pm.expect(schema.accountTypeName).to.equal(response.accountTypeName);",
+							"        });",
+							"",
+							"        pm.test(\"Fetched Account bankId is same as the created account\", function () {",
+							"        pm.expect(schema.bankId).to.equal(response.bankId);",
+							"        });",
+							"",
+							"        pm.test(\"Fetched Account Bank Name is same as the Created Account\", function () {",
+							"        pm.expect(schema.bankName).to.equal(response.bankName);",
+							"        });",
+							"",
+							"",
+							"        pm.test(\"Fetched Account CallBackURL is same as the Created Account\", function () {",
+							"        pm.expect(schema.callbackUrl).to.equal(response.callbackUrl);",
+							"        });",
+							"",
+							"        pm.test(\"Fetched Account Reference Number is same as the Created Account\", function () {",
+							"        pm.expect(schema.accountReferenceNumber).to.equal(response.accountReferenceNumber);",
+							"        });",
+							"}",
+							"",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text());",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Internal Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Internal Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account/fetchDetails?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account",
+						"fetchDetails"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Fetch Account Details",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}:8091/api/bsa/v2/account/37",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"bsa",
+								"v2",
+								"account",
+								"37"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 23 Jun 2020 17:12:12 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accountId\": 37,\n    \"accountNumber\": \"AC123\",\n    \"accountType\": 1,\n    \"accountTypeName\": \"Saving Account\",\n    \"bankId\": 1,\n    \"bankName\": \"Axis\",\n    \"status\": \"\",\n    \"referenceIds\": [\n        \"PR_1170101896\"\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Update Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52526e4f-0a26-429b-8faa-27434eac22ec",
+						"exec": [
+							"//Function to check updated account and created account are same",
+							"function checkUpdatedAccount(x, y) {",
+							"    if ((x.accountId == y.accountId) && (x.accountName == y.accountName) && (x.accountNumber == y.accountNumber) && (x.accountType == y.accountType) && (x.bankId == y.bankId) && (x.callbackUrl == y.callbackUrl))",
+							"        return true;",
+							"",
+							"    else",
+							"        return false;",
+							"}",
+							"",
+							"//Function to check if the number is integer",
+							"function isNormalInteger(str) {",
+							"    var n = Math.floor(Number(str));",
+							"    return n !== Infinity && String(n) === str && n >= 0;",
+							"}",
+							"",
+							"var response = pm.response.json();",
+							"",
+							"if(pm.response.status == \"Accepted\")",
+							"{",
+							"",
+							"    var schema = pm.globals.get(\"CreatedAccount\");",
+							"",
+							"    pm.test(\"Status code is 202, Successfully Updated the Account\", function () {",
+							"    pm.response.to.have.status(202);",
+							"    });",
+							"",
+							"    ",
+							"    //Assertions to check if mandatory fields are empty",
+							"    pm.test(\"Bank Account Id has to be a number\", function () {",
+							"        pm.expect(isNormalInteger(response.accountId)).to.be.true;",
+							"        pm.expect(response.accountId).to.not.equal(null);",
+							"        //pm.expect(response.accountId).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account name has to be string\", function () {",
+							"        pm.expect(response.accountName).to.have.string;",
+							"        pm.expect(response.accountName).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Account number has to be a valid\", function () {",
+							"        pm.expect(response.accountNumber).to.have.string;",
+							"        pm.expect(response.accountNumber).to.not.equal(null);",
+							"        });",
+							"    ",
+							"    pm.test(\"Account Type has to be a number\", function () {",
+							"        pm.expect(response.accountType).to.be.oneOf([\"1\", \"2\", \"3\", \"4\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"AccountTypeName has to be a string\", function () {",
+							"        pm.expect(response.accountTypeName).to.have.string;",
+							"        pm.expect(response.accountTypeName).to.be.oneOf([\"Savings Account\",\"Current Account\",\"Overdraft Account\", \"Cash Credit Account\"]);",
+							"        });",
+							"    ",
+							"    pm.test(\"Bank Id has to be a number\", function () {",
+							"        pm.expect(response.bankId).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"Bank name has to be string\", function () {",
+							"        pm.expect(response.bankName).to.have.string;",
+							"        pm.expect(response.bankName).to.not.equal(null);",
+							"        pm.expect(response.bankName).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Status has to be string\", function () {",
+							"        pm.expect(response.status).to.have.string;",
+							"        pm.expect(response.status).to.not.equal(null);",
+							"        });",
+							"",
+							"    pm.test(\"CallBackURL has to be string\", function () {",
+							"        pm.expect(response.callbackUrl).to.have.string;",
+							"        pm.expect(response.callbackUrl).to.not.equal(null);",
+							"        pm.expect(response.callbackUrl).to.not.be.empty;",
+							"        });",
+							"",
+							"    pm.test(\"Account Reference Number has to be string\", function () {",
+							"        pm.expect(response.accountReferenceNumber).to.have.string;",
+							"        pm.expect(response.accountReferenceNumber).to.not.equal(null);",
+							"        pm.expect(response.accountReferenceNumber).to.not.be.empty;",
+							"        });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid bank id\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"Invalid account type\");",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"        pm.expect(pm.response.text()).to.include(\"JSON parse error....\");",
+							"    });",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Internal Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Internal Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"accountId\": \"{{BankAccountId}}\",\n   \"accountName\": \"{{updateAccountName}}\",\n   \"accountNumber\": \"{{updateAccountNumber}}\",\n   \"accountType\": \"{{updateAccountType}}\",\n   \"bankId\": \"{{updateBankId}}\",\n   \"callbackUrl\": \"{{updateCallbackUrl}}\"         \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account/update?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account",
+						"update"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Account Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4953c3e6-22a8-4a87-b42a-df55c1d338d0",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Fetch Account Details is Successful, Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    var schema = {",
+							"        \"accountId\": pm.globals.get(\"BankAccountId\"),",
+							"        \"accountName\": pm.globals.get(\"AccountName\"),",
+							"        \"accountNumber\": pm.globals.get(\"BankAccountNumber\"),",
+							"        \"accountType\": pm.globals.get(\"AccountType\"),",
+							"        \"accountTypeName\": pm.globals.get(\"AccountTypeName\"),",
+							"        \"bankId\": pm.globals.get(\"BankId\"),",
+							"        \"bankName\": pm.globals.get(\"BankName\"),",
+							"        \"status\": pm.globals.get(\"AccountStatus\"),",
+							"        \"callbackUrl\": pm.globals.get(\"CallBackURL\"),",
+							"        \"accountReferenceNumber\": pm.globals.get(\"AccountReferenceNumber\"),",
+							"        };",
+							"",
+							"        pm.test(\"Fetched Account Reference Number is same as the Created Account\", function () {",
+							"        pm.expect(schema.accountReferenceNumber).to.equal(response.accountReferenceNumber);",
+							"        });",
+							"}",
+							"",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Invalid bank account id\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text());",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account/fetchDetails?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account",
+						"fetchDetails"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Fetch Account Details",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base-url}}:8091/api/bsa/v2/account/37",
+							"host": [
+								"{{base-url}}"
+							],
+							"port": "8091",
+							"path": [
+								"api",
+								"bsa",
+								"v2",
+								"account",
+								"37"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Tue, 23 Jun 2020 17:12:12 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accountId\": 37,\n    \"accountNumber\": \"AC123\",\n    \"accountType\": 1,\n    \"accountTypeName\": \"Saving Account\",\n    \"bankId\": 1,\n    \"bankName\": \"Axis\",\n    \"status\": \"\",\n    \"referenceIds\": [\n        \"PR_1170101896\"\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Fetch Account with files",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c6a7d125-6394-45a7-b61f-59d1f34f952f",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"    pm.test(\"Fetch Account Details is Successful, Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    var schema = {",
+							"        \"accountId\": pm.globals.get(\"BankAccountId\"),",
+							"        \"accountName\": pm.globals.get(\"AccountName\"),",
+							"        \"accountNumber\": pm.globals.get(\"BankAccountNumber\"),",
+							"        \"accountType\": pm.globals.get(\"AccountType\"),",
+							"        \"accountTypeName\": pm.globals.get(\"AccountTypeName\"),",
+							"        \"bankId\": pm.globals.get(\"BankId\"),",
+							"        \"bankName\": pm.globals.get(\"BankName\"),",
+							"        \"status\": pm.globals.get(\"AccountStatus\"),",
+							"        \"callbackUrl\": pm.globals.get(\"CallBackURL\"),",
+							"        \"accountReferenceNumber\": pm.globals.get(\"AccountReferenceNumber\"),",
+							"        };",
+							"",
+							"        pm.test(\"Fetched Account Reference Number is same as the Created Account\", function () {",
+							"        pm.expect(schema.accountReferenceNumber).to.equal(response.account.accountReferenceNumber);",
+							"        });",
+							"        ",
+							"        pm.test(\"files : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('files');",
+							"        });",
+							"",
+							"        pm.test(\"account : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('account');",
+							"        });",
+							"}",
+							"",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"No such account Id found\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text());",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Internal Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Internal Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account/files?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account",
+						"files"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": "213",
+							"disabled": true
+						},
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch All Account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d6350639-bd3c-41f7-add9-036a20a28f53",
+						"exec": [
+							"var response = pm.response.json();",
+							"",
+							"",
+							"if(pm.response.status == \"OK\")",
+							"{",
+							"        pm.test(\"Fetch Account Details is Successful, Status code is 200\", function () {",
+							"        pm.response.to.have.status(200);",
+							"        });",
+							"   ",
+							"        pm.test(\"pagination : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('pagination');",
+							"        });",
+							"",
+							"        pm.test(\"pageNumber : Property has to be present\", function (){",
+							"        pm.expect(response.pagination).to.have.property('pageNumber');",
+							"        });",
+							"",
+							"        pm.test(\"pageSize : Property has to be present\", function (){",
+							"        pm.expect(response.pagination).to.have.property('pageSize');",
+							"        });",
+							"",
+							"        pm.test(\"totalElements : Property has to be present\", function (){",
+							"        pm.expect(response.pagination).to.have.property('totalElements');",
+							"        });",
+							"",
+							"        pm.test(\"totalPages : Property has to be present\", function (){",
+							"        pm.expect(response.pagination).to.have.property('totalPages');",
+							"        });",
+							"",
+							"        pm.test(\"accounts : Property has to be present\", function (){",
+							"        pm.expect(response).to.have.property('accounts');",
+							"        });",
+							"",
+							"        if(response.accounts[0]){",
+							"            pm.test(\"Updated Account is successfully fetched\", function(){",
+							"                pm.expect(response.accounts[0].accountId).to.equal(pm.globals.get(\"BankAccountId\"));",
+							"            });",
+							"        }",
+							"}",
+							"",
+							"else if(pm.response.status == \"Bad Request\")",
+							"{",
+							"    pm.test(\"error : Property has to be present\", function (){",
+							"    pm.expect(response).to.have.property('error');",
+							"    });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text(), function () {",
+							"    pm.expect(pm.response.text()).to.include(\"No such account Id found\");",
+							"        });",
+							"",
+							"    pm.test(\"The error message includes \" + pm.response.text());",
+							"",
+							"}",
+							"",
+							"else if(pm.response.status == \"Server Error\")",
+							"{",
+							"    pm.test(\"Status Code is 500: Server Error, Code is breaking/Runtime exception not being handled with appropriate error message\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else if(pm.response.status == \"Unauthorized\")",
+							"{",
+							"    pm.test(\"Status Code is 401: Unauthorized, Login failed\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}",
+							"",
+							"else",
+							"{",
+							"    pm.test(\"Please check the inputs\", function(){",
+							"        pm.expect.fail();",
+							"    });",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/api/bsa/v2/account/all?accountReferenceNumber={{AccountReferenceNumber}}",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"bsa",
+						"v2",
+						"account",
+						"all"
+					],
+					"query": [
+						{
+							"key": "accountReferenceNumber",
+							"value": "{{AccountReferenceNumber}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
