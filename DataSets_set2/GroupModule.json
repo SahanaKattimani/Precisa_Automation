@@ -1,0 +1,11 @@
+[
+	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+		"username": "user@finezza.in",
+		"password": "password",
+  		"BankId": 8,
+   		"AccountType": 4,
+		"NewGroupId": "NewGroupId12"
+	}
+	
+]

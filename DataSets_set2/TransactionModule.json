@@ -1,0 +1,15 @@
+[
+	{
+		"URL": "http://precisa.dev.finezza.in:8091",
+      	"username": "user@finezza.in",
+      	"password": "password",
+		"BankId": 8,
+   		"AccountType": 4,
+   		"transactionDate":"2020-10-15",
+    	"amount":"5000",
+    	"balance":"12000",
+    	"particular":"test particular by Sahana3",
+    	"transactionType":"DB",
+    	"file": "/Users/gatim/Postman/files/HDFC/2a626f4f-fb27-4915-9e2b-9f4ecae959a0_08.pdf"
+   	}
+]
